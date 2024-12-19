@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registered Customers</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: skyblue;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .delete-btn {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .delete-btn:hover {
+            background-color: #ff3333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Registered Customers</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Location</th>
+                <th>Type of Waste</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="customerList">
+            <!-- Customer rows will be dynamically added here -->
+        </tbody>
+    </table>
+    <script>
+        // Retrieve customers from localStorage
+        const customers = JSON.parse(localStorage.getItem('customers')) || [];
+
+        // Populate the table with customer data
+        const customerList = document.getElementById('customerList');
+        function renderCustomers() {
+            customerList.innerHTML = '';
+            customers.forEach((customer, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${customer.name}</td>
+                    <td>${customer.email}</td>
+                    <td>${customer.location}</td>
+                    <td>${customer.wasteType}</td>
+                    <td><button class="delete-btn" data-index="${index}">Delete</button></td>
+                `;
+                customerList.appendChild(row);
+            });
+
+            // Attach event listeners to delete buttons
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', deleteCustomer);
+            });
+        }
+
+        // Delete customer from the list and localStorage
+        function deleteCustomer(event) {
+            const index = event.target.getAttribute('data-index');
+            customers.splice(index, 1); // Remove the customer from the array
+            localStorage.setItem('customers', JSON.stringify(customers)); // Update localStorage
+            renderCustomers(); // Re-render the customer list
+        }
+
+        renderCustomers();
+    </script>
+</body>
+</html>
